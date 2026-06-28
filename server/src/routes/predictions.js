@@ -5,7 +5,6 @@ import { z } from "zod";
 import { runPrediction } from "../predictor.js";
 
 const router = express.Router();
-const memoryPredictions = [];
 
 const numericInput = z.union([z.number(), z.string()]).optional();
 const payloadSchema = z.object({
@@ -58,12 +57,12 @@ const payloadSchema = z.object({
 router.get("/health", (_req, res) => {
   res.json({
     ok: true,
-    storage: "memory",
+    storage: "stateless",
   });
 });
 
 router.get("/predictions", (_req, res) => {
-  res.json({ predictions: memoryPredictions.slice(0, 12) });
+  res.json({ predictions: [] });
 });
 
 router.post("/predict", async (req, res, next) => {
@@ -80,15 +79,14 @@ router.post("/predict", async (req, res, next) => {
     const input = parsed.data;
     const result = await runPrediction(input);
     const record = {
+      _id: randomUUID(),
       studentReference: input.studentReference || "",
       input,
       result,
       createdAt: new Date().toISOString(),
     };
 
-    memoryPredictions.unshift({ _id: randomUUID(), ...record });
-    memoryPredictions.splice(30);
-    res.status(201).json({ prediction: memoryPredictions[0] });
+    res.status(201).json({ prediction: record });
   } catch (error) {
     next(error);
   }

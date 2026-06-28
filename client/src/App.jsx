@@ -10,7 +10,7 @@ import {
   RefreshCcw,
   UserRound,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
 
@@ -165,7 +165,7 @@ function ResultCard({ result, loading }) {
 
       <div className="storage-note">
         <History size={15} />
-        <span>Recent predictions stay in this session</span>
+        <span>Recent predictions stay on this page only</span>
       </div>
     </aside>
   );
@@ -211,22 +211,6 @@ export default function App() {
     const submitted = Number(form.submitted_due_assessments) || 0;
     return due ? Math.min(Math.round((submitted / due) * 100), 100) : 0;
   }, [form.due_assessments, form.submitted_due_assessments]);
-
-  async function loadHistory() {
-    try {
-      const response = await fetch(`${API_BASE}/predictions`);
-      if (response.ok) {
-        const data = await response.json();
-        setHistory(data.predictions || []);
-      }
-    } catch {
-      setHistory([]);
-    }
-  }
-
-  useEffect(() => {
-    loadHistory();
-  }, []);
 
   function handleChange(event) {
     const { name, value, type } = event.target;
@@ -287,7 +271,7 @@ export default function App() {
         throw new Error(data.message || "Prediction failed.");
       }
       setResult(data.prediction.result);
-      loadHistory();
+      setHistory((current) => [data.prediction, ...current].slice(0, 5));
     } catch (err) {
       setError(err.message || "Prediction failed.");
     } finally {

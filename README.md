@@ -134,7 +134,7 @@ Folders:
 - `client/` - Vite + React frontend
 - `server/` - Express API
 - Python bridge that calls `models/dropout_model.joblib`
-- In-memory recent prediction history for the current server session
+- Page-local recent prediction history, cleared when the page refreshes
 
 Install web dependencies:
 
@@ -196,7 +196,7 @@ git remote add space https://huggingface.co/spaces/YOUR_HF_USERNAME/early-dropou
 git push space main
 ```
 
-No external database is required. Recent predictions are kept in memory for the current running server session.
+No external database is required. Recent predictions are only kept in the current browser page and clear on refresh.
 
 If the Space build fails, check the logs for these common issues:
 
