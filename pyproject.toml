@@ -1,0 +1,20 @@
+[project]
+name = "early-dropout-detection"
+version = "0.1.0"
+description = "Early dropout detection from online course behavior CSV data."
+requires-python = ">=3.10"
+dependencies = [
+    "pandas==2.3.3",
+    "numpy==2.0.1",
+    "scipy==1.14.0",
+    "scikit-learn==1.7.2",
+    "joblib==1.5.2",
+    "shap==0.52.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
